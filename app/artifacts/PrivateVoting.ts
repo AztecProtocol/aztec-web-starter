@@ -14,7 +14,6 @@ import {
   type ContractInstanceWithAddress,
   type ContractMethod,
   type ContractStorageLayout,
-  type ContractNotes,
   decodeFromAbi,
   DeployMethod,
   EthAddress,
@@ -26,7 +25,6 @@ import {
   loadContractArtifact,
   loadContractArtifactForPublic,
   type NoirCompiledContract,
-  NoteSelector,
   Point,
   type PublicKey,
   PublicKeys,
@@ -34,21 +32,21 @@ import {
   type U128Like,
   type WrappedFieldLike,
 } from '@aztec/aztec.js';
-import EasyPrivateVotingContractArtifactJson from './private_voting-EasyPrivateVoting.json' with { type: 'json' };
-export const EasyPrivateVotingContractArtifact = loadContractArtifact(EasyPrivateVotingContractArtifactJson as NoirCompiledContract);
+import PrivateVotingContractArtifactJson from './private_voting-PrivateVoting.json' with { type: 'json' };
+export const PrivateVotingContractArtifact = loadContractArtifact(PrivateVotingContractArtifactJson as NoirCompiledContract);
 
 
 
 /**
- * Type-safe interface for contract EasyPrivateVoting;
+ * Type-safe interface for contract PrivateVoting;
  */
-export class EasyPrivateVotingContract extends ContractBase {
+export class PrivateVotingContract extends ContractBase {
   
   private constructor(
     instance: ContractInstanceWithAddress,
     wallet: Wallet,
   ) {
-    super(instance, EasyPrivateVotingContractArtifact, wallet);
+    super(instance, PrivateVotingContractArtifact, wallet);
   }
   
 
@@ -63,7 +61,7 @@ export class EasyPrivateVotingContract extends ContractBase {
     address: AztecAddress,
     wallet: Wallet,
   ) {
-    return Contract.at(address, EasyPrivateVotingContract.artifact, wallet) as Promise<EasyPrivateVotingContract>;
+    return Contract.at(address, PrivateVotingContract.artifact, wallet) as Promise<PrivateVotingContract>;
   }
 
   
@@ -71,28 +69,28 @@ export class EasyPrivateVotingContract extends ContractBase {
    * Creates a tx to deploy a new instance of this contract.
    */
   public static deploy(wallet: Wallet, admin: AztecAddressLike) {
-    return new DeployMethod<EasyPrivateVotingContract>(PublicKeys.default(), wallet, EasyPrivateVotingContractArtifact, EasyPrivateVotingContract.at, Array.from(arguments).slice(1));
+    return new DeployMethod<PrivateVotingContract>(PublicKeys.default(), wallet, PrivateVotingContractArtifact, PrivateVotingContract.at, Array.from(arguments).slice(1));
   }
 
   /**
    * Creates a tx to deploy a new instance of this contract using the specified public keys hash to derive the address.
    */
   public static deployWithPublicKeys(publicKeys: PublicKeys, wallet: Wallet, admin: AztecAddressLike) {
-    return new DeployMethod<EasyPrivateVotingContract>(publicKeys, wallet, EasyPrivateVotingContractArtifact, EasyPrivateVotingContract.at, Array.from(arguments).slice(2));
+    return new DeployMethod<PrivateVotingContract>(publicKeys, wallet, PrivateVotingContractArtifact, PrivateVotingContract.at, Array.from(arguments).slice(2));
   }
 
   /**
    * Creates a tx to deploy a new instance of this contract using the specified constructor method.
    */
-  public static deployWithOpts<M extends keyof EasyPrivateVotingContract['methods']>(
+  public static deployWithOpts<M extends keyof PrivateVotingContract['methods']>(
     opts: { publicKeys?: PublicKeys; method?: M; wallet: Wallet },
-    ...args: Parameters<EasyPrivateVotingContract['methods'][M]>
+    ...args: Parameters<PrivateVotingContract['methods'][M]>
   ) {
-    return new DeployMethod<EasyPrivateVotingContract>(
+    return new DeployMethod<PrivateVotingContract>(
       opts.publicKeys ?? PublicKeys.default(),
       opts.wallet,
-      EasyPrivateVotingContractArtifact,
-      EasyPrivateVotingContract.at,
+      PrivateVotingContractArtifact,
+      PrivateVotingContract.at,
       Array.from(arguments).slice(1),
       opts.method ?? 'constructor',
     );
@@ -104,14 +102,14 @@ export class EasyPrivateVotingContract extends ContractBase {
    * Returns this contract's artifact.
    */
   public static get artifact(): ContractArtifact {
-    return EasyPrivateVotingContractArtifact;
+    return PrivateVotingContractArtifact;
   }
 
   /**
    * Returns this contract's artifact with public bytecode.
    */
   public static get artifactForPublic(): ContractArtifact {
-    return loadContractArtifactForPublic(EasyPrivateVotingContractArtifactJson as NoirCompiledContract);
+    return loadContractArtifactForPublic(PrivateVotingContractArtifactJson as NoirCompiledContract);
   }
   
 
@@ -133,15 +131,6 @@ active_at_block: {
     }
     
 
-  public static get notes(): ContractNotes<'ValueNote'> {
-    return {
-      ValueNote: {
-          id: new NoteSelector(0),
-        }
-    } as ContractNotes<'ValueNote'>;
-  }
-  
-
   /** Type-safe wrappers for the public methods exposed by the contract. */
   public declare methods: {
     
@@ -156,6 +145,9 @@ active_at_block: {
 
     /** get_vote(candidate: field) */
     get_vote: ((candidate: FieldLike) => ContractFunctionInteraction) & Pick<ContractMethod, 'selector'>;
+
+    /** process_message(message_ciphertext: struct, message_context: struct) */
+    process_message: ((message_ciphertext: FieldLike[], message_context: { tx_hash: FieldLike, unique_note_hashes_in_tx: FieldLike[], first_nullifier_in_tx: FieldLike, recipient: AztecAddressLike }) => ContractFunctionInteraction) & Pick<ContractMethod, 'selector'>;
 
     /** public_dispatch(selector: field) */
     public_dispatch: ((selector: FieldLike) => ContractFunctionInteraction) & Pick<ContractMethod, 'selector'>;

@@ -10,10 +10,9 @@ This is an example web app that demonstrates how to interact with an Aztec contr
 
 1. Install the Aztec tools from the first few steps in [Quick Start Guide](https://docs.aztec.network/developers/getting_started).
 
-Please note that this project uses `0.87.4` version of Aztec SDK. If you wish to use a different version, please update the dependencies in the `app/package.json` and in `contracts/Nargo.toml` file to match your version.
+Please note that this project uses `2.0.2` version of Aztec SDK. If you wish to use a different version, please update the dependencies in the `app/package.json` and in `contracts/Nargo.toml` file to match your version.
 
 You can install a specific version of Aztec tools by running `aztec-up 0.X.X`
-
 
 2. Compile smart contracts in `/contracts`:
 

@@ -9,38 +9,38 @@ jobs:
     timeout-minutes: 120
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - uses: actions/setup-node@v4
-      with:
-        node-version: lts/*
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
 
-    - name: Set up Docker
-      uses: docker/setup-buildx-action@v2
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v2
 
-    - name: Install Aztec CLI
-      run: |
-        curl -s https://install.aztec.network > tmp.sh
-        bash tmp.sh <<< yes "yes"
+      - name: Install Aztec CLI
+        run: |
+          curl -s https://install.aztec.network > tmp.sh
+          bash tmp.sh <<< yes "yes"
 
-    - name: Update path
-      run: echo "/home/runner/.aztec/bin" >> $GITHUB_PATH
+      - name: Update path
+        run: echo "/home/runner/.aztec/bin" >> $GITHUB_PATH
 
-    - name: Set Aztec version and start sandbox
-      run: |
-        aztec-up 0.87.4 
-        aztec start --sandbox &
+      - name: Set Aztec version and start sandbox
+        run: |
+          aztec-up 2.0.2 
+          aztec start --sandbox &
 
-    - name: Install dependencies
-      working-directory: ./app
-      run: npm install -g yarn && yarn
+      - name: Install dependencies
+        working-directory: ./app
+        run: npm install -g yarn && yarn
 
-    - name: Install Playwright Browsers
-      working-directory: ./app
-      run: yarn playwright install --with-deps
+      - name: Install Playwright Browsers
+        working-directory: ./app
+        run: yarn playwright install --with-deps
 
-    - name: Build
-      run: yarn build
+      - name: Build
+        run: yarn build
 
-    - name: Run tests
-      run: yarn test
+      - name: Run tests
+        run: yarn test
