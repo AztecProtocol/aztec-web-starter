@@ -8,9 +8,9 @@
   },
   "scripts": {
     "clean": "rm -rf app/dist contracts/target contracts/codegenCache.json",
-    "compile-contracts": "cd contracts && ${AZTEC_NARGO:-aztec-nargo} compile",
+    "compile-contracts": "cd contracts && ${AZTEC_NARGO:-aztec-nargo} compile && ${AZTEC_POSTPROCESS:-aztec-postprocess-contract}",
     "codegen-contracts": "cd contracts && ${AZTEC_BUILDER:-aztec} codegen ./target -o ./target",
-    "copy-artifacts": "cp contracts/target/*.json contracts/target/*.ts app/artifacts",
+    "copy-artifacts": "mkdir -p app/artifacts && cp contracts/target/*.json contracts/target/*.ts app/artifacts",
     "build-contracts": "yarn clean && yarn compile-contracts && yarn codegen-contracts && yarn copy-artifacts",
     "deploy-contracts": "node --experimental-transform-types scripts/deploy.ts",
     "dev": "webpack serve --mode development",
@@ -22,14 +22,14 @@
     "lint": "prettier --check ./src"
   },
   "dependencies": {
-    "@aztec/accounts": "0.87.4",
-    "@aztec/aztec.js": "0.87.4",
-    "@aztec/constants": "0.87.4",
-    "@aztec/foundation": "0.87.4",
-    "@aztec/kv-store": "0.87.4",
-    "@aztec/noir-contracts.js": "0.87.4",
-    "@aztec/pxe": "0.87.4",
-    "@aztec/stdlib": "0.87.4"
+    "@aztec/accounts": "2.0.2",
+    "@aztec/aztec.js": "2.0.2",
+    "@aztec/constants": "2.0.2",
+    "@aztec/foundation": "2.0.2",
+    "@aztec/kv-store": "2.0.2",
+    "@aztec/noir-contracts.js": "2.0.2",
+    "@aztec/pxe": "2.0.2",
+    "@aztec/stdlib": "2.0.2"
   },
   "devDependencies": {
     "@playwright/test": "1.52.0",

@@ -17,7 +17,7 @@ export default defineConfig({
   expect: {
     timeout: 20_000,
   },
-  timeout: 400_000,
+  timeout: 1_600_000,
   projects: [
     {
       name: 'webkit',
