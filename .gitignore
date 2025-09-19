@@ -38,3 +38,4 @@ blob-report/
 playwright/.cache/
 
 .env
+app/artifacts/
