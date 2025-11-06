@@ -29,7 +29,7 @@ import {
   DefaultAccountEntrypointOptions,
 } from '@aztec/entrypoints/account';
 
-const PROVER_ENABLED = true;
+const PROVER_ENABLED = false;
 
 const logger = createLogger('wallet');
 const LocalStorageKey = 'aztec-account';
