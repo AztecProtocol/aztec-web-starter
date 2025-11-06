@@ -22,14 +22,15 @@
     "lint": "prettier --check ./src"
   },
   "dependencies": {
-    "@aztec/accounts": "2.0.2",
-    "@aztec/aztec.js": "2.0.2",
-    "@aztec/constants": "2.0.2",
-    "@aztec/foundation": "2.0.2",
-    "@aztec/kv-store": "2.0.2",
-    "@aztec/noir-contracts.js": "2.0.2",
-    "@aztec/pxe": "2.0.2",
-    "@aztec/stdlib": "2.0.2"
+    "@aztec/accounts": "3.0.0-devnet.4",
+    "@aztec/aztec.js": "3.0.0-devnet.4",
+    "@aztec/constants": "3.0.0-devnet.4",
+    "@aztec/foundation": "3.0.0-devnet.4",
+    "@aztec/kv-store": "3.0.0-devnet.4",
+    "@aztec/noir-contracts.js": "3.0.0-devnet.4",
+    "@aztec/pxe": "3.0.0-devnet.4",
+    "@aztec/stdlib": "3.0.0-devnet.4",
+    "@aztec/test-wallet": "3.0.0-devnet.4"
   },
   "devDependencies": {
     "@playwright/test": "1.52.0",
@@ -45,7 +46,7 @@
     "stream-browserify": "^3.0.0",
     "style-loader": "^3.3.4",
     "ts-loader": "^9.5.1",
-    "typescript": "^5.3.3",
+    "typescript": "^5.7.3",
     "util": "^0.12.5",
     "webpack": "^5.99.6",
     "webpack-cli": "^6.0.1",

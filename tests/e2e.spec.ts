@@ -1,25 +1,40 @@
 import { test, expect } from '@playwright/test';
 
-const proofTimeout = 1_200_000;
+// Time take to generate a proof.
+const proofTimeout = 250_000;
 
-test.beforeAll(async ({ }, { config }) => {
+test.beforeAll(async () => {
   // Make sure the node is running
   const nodeUrl = process.env.AZTEC_NODE_URL || 'http://localhost:8080';
-  const nodeResp = await fetch(nodeUrl + "/status");
+  const nodeResp = await fetch(nodeUrl + '/status');
   if (!nodeResp.ok) {
-    throw new Error(`Failed to connect to node. This test assumes you have a Sandbox running at ${nodeUrl}.`);
-  }
-
-  // Make sure the dev server is running
-  const devServerUrl = config.webServer.url;
-  const serverResp = await fetch(devServerUrl);
-  if (!serverResp.ok) {
-    throw new Error(`Failed to connect to app server at ${devServerUrl}.`);
+    throw new Error(
+      `Failed to connect to node. This test assumes you have a Sandbox running at ${nodeUrl}.`
+    );
   }
 });
 
-
 test('create account and cast vote', async ({ page }, testInfo) => {
+  page.on('console', (msg) => {
+    const text = msg.text();
+    if (msg.type() === 'error') {
+      console.error(text);
+      // NOTE: this block is speculative. We were too busy to test if it worked - if we get real errors
+      // distinguished from timeouts, then it worked.
+      // Fail immediately on JavaScript errors to avoid timeout
+      if (
+        text.includes('Uncaught') ||
+        text.includes('TypeError') ||
+        text.includes('ReferenceError') ||
+        text.includes('SyntaxError') ||
+        text.includes('RangeError')
+      ) {
+        throw new Error(`JavaScript error detected: ${text}`);
+      }
+    } else {
+      console.log(text);
+    }
+  });
   await page.goto('/');
   await expect(page).toHaveTitle(/Private Voting/);
 
@@ -36,9 +51,9 @@ test('create account and cast vote', async ({ page }, testInfo) => {
 
   // Select different account for each browser
   const testAccountNumber = {
-    'chromium': 1,
-    'firefox': 2,
-    'webkit': 3,
+    chromium: 1,
+    firefox: 2,
+    webkit: 3,
   }[testInfo.project.name];
   await selectTestAccount.selectOption(testAccountNumber.toString());
 
@@ -50,9 +65,9 @@ test('create account and cast vote', async ({ page }, testInfo) => {
   // Choose the candidate to vote for based on the browser used to run the test.
   // This is a hack to avoid race conditions when tests are run in parallel against the same network.
   const candidateId = {
-    'chromium': 2,
-    'firefox': 3,
-    'webkit': 4,
+    chromium: 2,
+    firefox: 3,
+    webkit: 4,
   }[testInfo.project.name];
 
   await expect(voteInput).toBeVisible();
@@ -61,7 +76,7 @@ test('create account and cast vote', async ({ page }, testInfo) => {
 
   await voteButton.click();
 
-  // This will take some time to complete (Client IVC proof generation)
+  // This will take some time to complete (chonk proof generation)
   // Button is enabled when the transaction is complete
   await expect(voteButton).toBeEnabled({
     enabled: true,
@@ -69,5 +84,7 @@ test('create account and cast vote', async ({ page }, testInfo) => {
   });
 
   // Verify vote results
-  await expect(voteResults).toHaveText(new RegExp(`Candidate ${candidateId}: 1 votes`));
+  await expect(voteResults).toHaveText(
+    new RegExp(`Candidate ${candidateId}: 1 votes`)
+  );
 });
