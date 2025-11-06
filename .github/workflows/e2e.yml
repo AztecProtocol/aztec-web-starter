@@ -28,7 +28,7 @@ jobs:
 
       - name: Set Aztec version and start sandbox
         run: |
-          aztec-up 2.0.2 
+          aztec-up 3.0.0-devnet.4 
           aztec start --sandbox &
 
       - name: Install dependencies
