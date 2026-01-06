@@ -107,10 +107,10 @@ A **nullifier** is a unique cryptographic value that:
 ```typescript
 // From contracts/src/main.nr:48
 let nullifier = poseidon2_hash([
-  context.msg_sender().unwrap().to_field(),
+  self.msg_sender().unwrap().to_field(),
   secret,
 ]);
-context.push_nullifier(nullifier);
+self.context.push_nullifier(nullifier);
 ```
 
 ### 3. Sponsored Fee Payment
@@ -158,9 +158,9 @@ struct Storage<Context> {
 
 ```noir
 fn constructor(admin: AztecAddress) {
-    storage.admin.write(admin);
-    storage.vote_ended.write(false);
-    storage.active_at_block.initialize(context.block_number());
+    self.storage.admin.write(admin);
+    self.storage.vote_ended.write(false);
+    self.storage.active_at_block.initialize(self.context.block_number());
 }
 ```
 
@@ -171,17 +171,17 @@ fn constructor(admin: AztecAddress) {
 fn cast_vote(candidate: Field) {
     // Step 1: Get nullifier public key
     let msg_sender_nullifier_public_key_message_hash =
-        get_public_keys(context.msg_sender().unwrap()).npk_m.hash();
+        get_public_keys(self.msg_sender().unwrap()).npk_m.hash();
 
     // Step 2: Get secret key (only you can do this)
-    let secret = context.request_nsk_app(msg_sender_nullifier_public_key_message_hash);
+    let secret = self.context.request_nsk_app(msg_sender_nullifier_public_key_message_hash);
 
     // Step 3: Create nullifier (prevents double voting)
-    let nullifier = poseidon2_hash([context.msg_sender().unwrap().to_field(), secret]);
-    context.push_nullifier(nullifier);
+    let nullifier = poseidon2_hash([self.msg_sender().unwrap().to_field(), secret]);
+    self.context.push_nullifier(nullifier);
 
-    // Step 4: Add vote to public tally (in a separate public function)
-    PrivateVoting::at(context.this_address()).add_to_tally_public(candidate).enqueue(&mut context);
+    // Step 4: Add vote to public tally (using enqueue_self for same-contract calls)
+    self.enqueue_self.add_to_tally_public(candidate);
 }
 ```
 
@@ -194,12 +194,12 @@ fn cast_vote(candidate: Field) {
 **add_to_tally_public** - Public function to increment vote count
 
 ```noir
+#[only_self]
 #[external("public")]
-#[internal]
 fn add_to_tally_public(candidate: Field) {
-    assert(storage.vote_ended.read() == false, "Vote has ended");
-    let new_tally = storage.tally.at(candidate).read() + 1;
-    storage.tally.at(candidate).write(new_tally);
+    assert(self.storage.vote_ended.read() == false, "Vote has ended");
+    let new_tally = self.storage.tally.at(candidate).read() + 1;
+    self.storage.tally.at(candidate).write(new_tally);
 }
 ```
 
@@ -207,8 +207,8 @@ fn add_to_tally_public(candidate: Field) {
 
 ```noir
 #[external("utility")]
-unconstrained fn get_vote(candidate: Field) -> Field {
-    storage.tally.at(candidate).read()
+unconstrained fn get_vote(candidate: Field) -> pub Field {
+    self.storage.tally.at(candidate).read()
 }
 ```
 
@@ -390,8 +390,8 @@ voteButton.addEventListener('click', async (e) => {
     throw new Error('No account connected');
   }
 
-  // 3. Prepare contract interaction
-  const votingContract = await PrivateVotingContract.at(
+  // 3. Prepare contract interaction (Contract.at is now synchronous)
+  const votingContract = PrivateVotingContract.at(
     AztecAddress.fromString(contractAddress),
     wallet
   );
@@ -411,7 +411,7 @@ voteButton.addEventListener('click', async (e) => {
 
 ```typescript
 async function updateVoteTally(wallet: Wallet, from: AztecAddress) {
-  const votingContract = await PrivateVotingContract.at(
+  const votingContract = PrivateVotingContract.at(
     AztecAddress.fromString(contractAddress),
     wallet
   );
@@ -572,10 +572,10 @@ stateDiagram-v2
 - State is transparent
 - Example: `add_to_tally_public()`
 
-**Internal Functions** (`#[internal]`):
+**Only-Self Functions** (`#[only_self]`):
 
-- Can only be called from within the contract
-- Example: `add_to_tally_public()` is internal and can only be called by `cast_vote()`
+- Can only be called from within the same contract
+- Example: `add_to_tally_public()` can only be called by `cast_vote()` via `self.enqueue_self`
 
 **Utility Functions** (`#[external("utility")]`):
 
@@ -612,8 +612,8 @@ The `cast_vote` function uses a clever pattern:
 **Prerequisites**:
 
 ```bash
-# Install Aztec tools (version 3.0.0-devnet.4)
-aztec-up 3.0.0-devnet.4
+# Install Aztec tools (version 3.0.0-devnet.20251212)
+aztec-up 3.0.0-devnet.20251212
 
 # Install dependencies
 yarn install
@@ -627,10 +627,9 @@ yarn build-contracts
 
 What happens:
 
-1. Noir compiler (`aztec-nargo`) compiles `contracts/src/main.nr`
-2. Post-processor generates artifacts
-3. TypeScript bindings are generated
-4. Artifacts copied to `app/artifacts/`
+1. Aztec CLI (`aztec compile`) compiles `contracts/src/main.nr`
+2. TypeScript bindings are generated (`aztec codegen`)
+3. Artifacts copied to `app/artifacts/`
 
 **Step 2: Deploy Contracts**
 
@@ -740,4 +739,4 @@ PROVER_ENABLED=true         # Enable/disable proving
 
 ---
 
-_Generated for aztec-web-starter - Aztec 3.0.0-devnet.4_
+_Generated for aztec-web-starter - Aztec 3.0.0-devnet.20251212_

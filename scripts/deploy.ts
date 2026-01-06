@@ -101,8 +101,8 @@ async function deployContract(wallet: Wallet, deployer: AztecAddress) {
     contract.publicKeys,
     wallet,
     PrivateVotingContract.artifact,
-    (address: AztecAddress, wallet: Wallet) =>
-      PrivateVotingContract.at(address, wallet),
+    (instance, wallet) =>
+      PrivateVotingContract.at(instance.address, wallet),
     [deployer.toField()],
     getDefaultInitializer(PrivateVotingContract.artifact)?.name
   );
