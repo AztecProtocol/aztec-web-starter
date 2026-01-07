@@ -4,15 +4,15 @@ This is an example web app that demonstrates how to interact with an Aztec contr
 
 - Uses the [Private Voting](https://docs.aztec.network/developers/tutorials/codealong/contract_tutorials/private_voting_contract) example
 - Includes an embedded wallet. This is only for demonstration purposes and not for production use.
-- Works on top of the Sandbox, but can be adapted to work with a testnet.
+- Works on top of the local network, but can be adapted to work with a testnet.
 
 ### Setup
 
 1. Install the Aztec tools from the first few steps in [Quick Start Guide](https://docs.aztec.network/developers/getting_started).
 
-Please note that this project uses `3.0.0-devnet.4` version of Aztec SDK. If you wish to use a different version, please update the dependencies in the `app/package.json` and in `contracts/Nargo.toml` file to match your version.
+Please note that this project uses `3.0.0-devnet.20251212` version of Aztec SDK. If you wish to use a different version, please update the dependencies in the `package.json` and in `contracts/Nargo.toml` file to match your version.
 
-You can install a specific version of Aztec tools by running `aztec-up 3.0.0-devnet.4`
+You can install a specific version of Aztec tools by running `aztec-up 3.0.0-devnet.20251212`
 
 2. Compile smart contracts in `/contracts`:
 
@@ -31,11 +31,11 @@ yarn install
 yarn deploy-contracts
 ```
 
-The deploy script generates a random account and deploys the voting contract with it. It also uses the SponsoredFPC contract for fee payment. This is sufficient for testing with Sandbox, but is not suitable for production setup.
+The deploy script generates a random account and deploys the voting contract with it. It also uses the SponsoredFPC contract for fee payment. This is sufficient for testing with local network, but is not suitable for production setup.
 
 The script also writes the deployment info to `.env` (which our web-app reads from).
 
-> Note that the script generates client proofs and it may take a couple of seconds. For faster development, you can disable proving by calling with `PROVER_ENABLED=false` (Sandbox accepts transactions without a valid proof).
+> Note that the script generates client proofs and it may take a couple of seconds. For faster development, you can disable proving by calling with `PROVER_ENABLED=false` (The local network accepts transactions without a valid proof).
 
 4. Run the app (development mode):
 
@@ -65,7 +65,7 @@ yarn test
 
 ## Disable client proofs
 
-The Sandbox will accept transactions without a valid proof. You can disable proof generation when working against the Sandbox as it will save time during development.
+The local network will accept transactions without a valid proof. You can disable proof generation when working against the local network as it will save time during development.
 
 To disable proving in the deploy script, run:
 
