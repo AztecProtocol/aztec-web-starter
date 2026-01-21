@@ -35,7 +35,7 @@
     "@aztec/wallet-sdk": "3.0.0-devnet.20251212"
   },
   "devDependencies": {
-    "@playwright/test": "1.52.0",
+    "@playwright/test": "1.49.0",
     "@types/node": "^22.15.17",
     "assert": "^2.1.0",
     "buffer": "^6.0.3",
