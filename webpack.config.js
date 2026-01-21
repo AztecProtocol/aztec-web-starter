@@ -28,7 +28,7 @@ export default (_, argv) => ({
       template: './app/index.html',
       scriptLoading: 'module',
     }),
-    new Dotenv({ path: './.env' }),
+    new Dotenv({ path: './.env', silent: true }),
     new webpack.ProvidePlugin({ Buffer: ['buffer', 'Buffer'] }),
   ],
   resolve: {
