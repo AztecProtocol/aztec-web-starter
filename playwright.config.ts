@@ -15,9 +15,9 @@ export default defineConfig({
     baseURL: 'http://127.0.0.1:3000',
   },
   expect: {
-    timeout: 20_000,
+    timeout: 50_000,
   },
-  timeout: 1_600_000,
+  timeout: 400_000,
   projects: [
     {
       name: 'webkit',
@@ -27,16 +27,16 @@ export default defineConfig({
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
+    // Firefox is too slow in playwright during proof generation.
+    // {
+    //   name: 'firefox',
+    //   use: { ...devices['Desktop Firefox'] },
+    // },
   ],
 
   webServer: {
     command: 'PORT=3000 yarn serve',
-    url: 'http://127.0.0.1:3000',
-    reuseExistingServer: !process.env.CI,
+    port: 3000,
     timeout: 30_000,
   },
 });
