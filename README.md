@@ -1,3 +1,6 @@
+> [!WARNING]
+> **This repository targets Aztec 3.0.0-devnet and is no longer maintained.** It does not work with Aztec v6 or later. For current tutorials and examples, start at [docs.aztec.network](https://docs.aztec.network/developers/overview).
+
 # aztec-web-starter
 
 This is an example web app that demonstrates how to interact with an Aztec contract using the Aztec JS SDK.
